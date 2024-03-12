@@ -10,15 +10,11 @@ class UserRegisterForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={"class": "form-control"}))
     password = forms.CharField(
         label="passwword",
-        widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "your password"}
-        ),
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
     )
     password_confirm = forms.CharField(
         label="confirm",
-        widget=forms.PasswordInput(
-            attrs={"class": "form-control", "placeholder": "your password"}
-        ),
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
     )
 
     def clean_email(self):
@@ -34,3 +30,10 @@ class UserRegisterForm(forms.Form):
         p2 = cd.get("password_confirm")
         if p1 and p2 and p1 != p2:
             raise ValidationError("password most be like together")
+
+
+class UserLoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={"class": "form-control"}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+    )
