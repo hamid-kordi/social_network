@@ -1,5 +1,6 @@
+from typing import Any
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.views import View
 from .forms import UserRegisterForm, UserLoginForm
 from django.contrib.auth.models import User
@@ -12,7 +13,13 @@ from django.contrib.auth import authenticate, login, logout
 class RegisterUser(View):
     form_class = UserRegisterForm
 
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any):
+        if request.user.is_authenticated:
+            return redirect("home:home")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
+
         form = self.form_class()
         return render(request, "account/register.html", {"form": form})
 
@@ -48,3 +55,10 @@ class LoginUserForm(View):
                 return redirect("home:home")
             messages.error(request, "usernmae or your pass is not correct", "warning")
             return render(request, self.template, {"form": form})
+
+
+class UserLogoutForm(View):
+    def get(self, request):
+        logout(request)
+        messages.success(request, "you loged out successfully", "success")
+        return redirect("home:home")
