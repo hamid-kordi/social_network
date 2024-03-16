@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-l7e$b_xrmjp!t*glftv16#j6dtkjhboxi)o64p#5!sv7hpp%!w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "home.apps.HomeConfig",
-    "account.apps.AccountConfig"
+    "account.apps.AccountConfig",
 ]
 
 MIDDLEWARE = [
@@ -56,7 +56,7 @@ ROOT_URLCONF = "socialnet.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'templates'],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -113,6 +113,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+LOGIN_URL = "/account/login/"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -123,3 +124,8 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+AUTHENTICATION_BACKENDS =["django.contrib.auth.backends.ModelBackend",
+                          "account.authenticate.EmailAuthenticate"]
+
