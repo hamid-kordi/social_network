@@ -44,7 +44,9 @@ class PostUpdateView(LoginRequiredMixin, View):
             return redirect("home:home")
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request, user_id):
-        post = Post.objects.get(pk = user_id)
-        form = self.form_class(isinstance=post)
+    def get(self, request, post_id):
+        post = Post.objects.get(pk = post_id)
+        form = self.form_class(instance=post)
         return render(request, "home/update.html", {"form": form})
+    def post(self,request,post_id):
+        pass
