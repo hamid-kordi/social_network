@@ -8,7 +8,8 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from home.models import Post
-
+from django.contrib.auth import views as authview
+from django.urls import reverse_lazy
 # Create your views here.
 
 
@@ -68,9 +69,16 @@ class UserLogoutForm(LoginRequiredMixin, View):
 
 
 class UserProfileView(LoginRequiredMixin, View):
-    template = 'account/profile.html'
+    template = "account/profile.html"
+
     def get(self, request, user_id):
         user = User.objects.get(pk=user_id)
         post = Post.objects.filter(user=user)
-        return render(request,self.template,{"user":user,"posts":post})
+        return render(request, self.template, {"user": user, "posts": post})
 
+
+class UserPasswordResetView(authview.PasswordResetView):
+    template_name = 'account/password_reset_form.html'
+    success_url = reverse_lazy('account:password_reset_done')
+    email_template_name = 'account/password_reset_email.html'
+    

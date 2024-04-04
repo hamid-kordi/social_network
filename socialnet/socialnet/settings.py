@@ -129,3 +129,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTHENTICATION_BACKENDS =["django.contrib.auth.backends.ModelBackend",
                           "account.authenticate.EmailAuthenticate"]
 
+
+
+# pass word reset : 
+EMAIL_BACKEND = 'django.core.mail.backend.smtp.EmailBackend'
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = 'corosavaahmad80@gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_PASSWORD = 'YOU TAKED IT FROM YOUR SERVICES'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'FADASH BESHAM MANEH'
