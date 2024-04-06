@@ -11,6 +11,8 @@ class Post(models.Model):
     created = models.DateField(auto_now_add=True)
     update = models.DateField(auto_now=True)
 
+    class Meta:
+        ordering = ('created','body')
     def __str__(self) -> str:
         return f"{self.slug} -> {self.user} - {self.created}"
 

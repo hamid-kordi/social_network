@@ -10,6 +10,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from home.models import Post
 from django.contrib.auth import views as authview
 from django.urls import reverse_lazy
+from .models import Follow
+
 # Create your views here.
 
 
@@ -69,16 +71,61 @@ class UserLogoutForm(LoginRequiredMixin, View):
 
 
 class UserProfileView(LoginRequiredMixin, View):
+    
     template = "account/profile.html"
-
     def get(self, request, user_id):
+        is_follow = False
         user = User.objects.get(pk=user_id)
+        # post = user.postts.all()
         post = Post.objects.filter(user=user)
-        return render(request, self.template, {"user": user, "posts": post})
+        relation = Follow.objects.filter(from_user=request.user, to_user=user)
+        if relation.exists():
+            is_follow = True
+        return render(
+            request,
+            self.template,
+            {"user": user, "posts": post, "is_follow": is_follow},
+        )
 
 
 class UserPasswordResetView(authview.PasswordResetView):
-    template_name = 'account/password_reset_form.html'
-    success_url = reverse_lazy('account:password_reset_done')
-    email_template_name = 'account/password_reset_email.html'
-    
+    template_name = "account/password_reset_form.html"
+    success_url = reverse_lazy("account:password_reset_done")
+    email_template_name = "account/password_reset_email.html"
+
+
+class UserPasswordResetDoneView(authview.PasswordChangeDoneView):
+    template_name = "account/password_reset_done.html"
+
+
+class UserPasswordResetConfirmView(authview.PasswordResetConfirmView):
+    template_name = "account/password_reset_confirm.html"
+    success_url = reverse_lazy("account:password_reset_compelete")
+
+
+class UserPasswordResetCompeleteView(authview.PasswordResetCompleteView):
+    template_name = "account/password_reset_complete.html"
+
+
+class UserFollowView(LoginRequiredMixin, View):
+    def get(self, request, user_id):
+        user = User.objects.get(id=user_id)
+        relation = Follow.objects.filter(from_user=request.user, to_user=user)
+        if relation.exists():
+            messages.error(request, "you follow this person alredy", "danger")
+        else:
+            Follow(from_user=request.user, to_user=user).save()
+            messages.success(request, "now you follow your friend", "success")
+        return redirect("account:user_profile", user.id)
+
+
+class UserUnFollowView(LoginRequiredMixin, View):
+    def get(self, request, user_id):
+        user = User.objects.get(id=user_id)
+        relation = Follow.objects.filter(from_user=request.user, to_user=user)
+        if relation.exists():
+            relation.delete()
+            messages.success(request, "now un follow your friend", "success")
+        else:
+            messages.error(request, "you unfollow this person alredy", "danger")
+        return redirect("account:user_profile", user.id)

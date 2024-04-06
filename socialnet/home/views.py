@@ -1,5 +1,5 @@
 from typing import Any
-from django.shortcuts import render, redirect,get_list_or_404
+from django.shortcuts import render, redirect, get_list_or_404
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from .models import Post
@@ -20,14 +20,22 @@ class HomeView(View):
 
 class DetailViewPost(View):
     def get(self, requset, post_id, post_slug):
-        post = get_list_or_404(Post,id=post_id, slug=post_slug,)
-       
-        return render(requset, "home/detail.html", {"post": post})
+        post1 = get_list_or_404(
+            Post,
+            id=post_id,
+            slug=post_slug,
+        )
+        post2 = Post.objects.get(
+            id=post_id,
+            slug=post_slug,
+        )
+
+        return render(requset, "home/detail.html", {"post": post2})
 
 
 class PostDeleteView(LoginRequiredMixin, View):
     def get(self, request, post_id):
-        post = get_list_or_404(Post,id=post_id)
+        post = get_list_or_404(Post, id=post_id)
         # post = Post.objects.get(pk=post_id)
         if post.user.id == request.user.id:
             post.delete()
@@ -73,7 +81,6 @@ class PostCreateView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         form = self.form_class
         return render(request, "home/create.html", {"form": form})
-        
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
