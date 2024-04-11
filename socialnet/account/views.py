@@ -43,6 +43,15 @@ class LoginUserForm(View):
     form_class = UserLoginForm
     template = "account/login.html"
 
+    def setup(self, request: HttpRequest, *args: Any, **kwargs: Any):
+        self.next = request.GET.get("next")
+        return super().setup(request, *args, **kwargs)
+
+    def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any):
+        if request.user.is_authenticated:
+            return redirect("home:home")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self, request):
         form = self.form_class()
         return render(request, self.template, {"form": form})
@@ -57,6 +66,8 @@ class LoginUserForm(View):
             if user is not None:
                 login(request, user)
                 messages.success(request, "youlogined successfuly", "success")
+                if self.next:
+                    return redirect(self.next)
                 return redirect("home:home")
             messages.error(request, "usernmae or your pass is not correct", "warning")
             return render(request, self.template, {"form": form})
@@ -71,8 +82,9 @@ class UserLogoutForm(LoginRequiredMixin, View):
 
 
 class UserProfileView(LoginRequiredMixin, View):
-    
+
     template = "account/profile.html"
+
     def get(self, request, user_id):
         is_follow = False
         user = User.objects.get(pk=user_id)
