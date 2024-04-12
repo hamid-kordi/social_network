@@ -13,3 +13,9 @@ class Follow(models.Model):
 
     def __str__(self) -> str:
         return f"{self.from_user} folloing {self.to_user}"
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    age = models.PositiveIntegerField(default=0)
+    bio = models.TextField(null=True,blank=True)

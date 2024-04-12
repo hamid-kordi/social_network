@@ -27,6 +27,7 @@ urlpatterns = [
     ),
     path('follow/<int:user_id>',views.UserFollowView.as_view(),name='user_follow'),
     path('unfollow/<int:user_id>',views.UserUnFollowView.as_view(),name='user_unfollow'),
+    path('edit_user/',views.UserEditView.as_view(),name='edit_user')
 
 
 ]
