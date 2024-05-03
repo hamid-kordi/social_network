@@ -36,7 +36,7 @@ class DetailViewPost(View):
         )
         return super().setup(request, *args, **kwargs)
 
-    def get(self, requset, *args: Any, **kwargs: Any):
+    def get(self, request, *args: Any, **kwargs: Any):
         # post1 = get_object_or_404(
         #     Post,
         #     id=post_id,
@@ -48,12 +48,12 @@ class DetailViewPost(View):
         # )
         comment = self.post_ionstans.posrcomment.filter(is_reply=False)
         can_like = False
-        if requset.user.is_authenticated and self.post_ionstans.user_can_like(
-            requset.user
+        if request.user.is_authenticated and self.post_ionstans.user_can_like(
+            request.user
         ):
             can_like = True
         return render(
-            requset,
+            request,
             "home/detail.html",
             {
                 "post": self.post_ionstans,

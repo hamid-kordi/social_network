@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-
-
 {% block content %}
 
 {% if request.user.id == post.user.id %}
@@ -12,8 +10,6 @@
 
 {% endif %}
 
-
-
 <p class="card">
     {{ post.user }}
     -> updatedin :
@@ -21,7 +17,6 @@
     -> createdin :
     {{ post.created | date:"Y M"}}
 </p>
-
 
 <p>
     {{ post.body }}
@@ -37,17 +32,12 @@
 <form action="" method="post">
     {% csrf_token %}
     {{ form.is_p }}
-
         <input type="submit" value="send">
 </form>
 <br>
 {% else %}
 <p class="alert alert-danger">only loged in user can comment</p>
 {% endif %}
-
-
-
-
 
 {% for comment in comments %}
 <div class="card bg-dark text-white">
@@ -63,24 +53,19 @@
     </form>
     {% endif %}
 
-
-
-    {% with replies = commentsureply.all %}
+    {% with replies=comment.rcomments.all %}
     {% for reply in replies %}
     <p class="bg-primary p-3 m-2">{{ reply.user }} <br> {{reply.body}}</p>
     {% endfor %}
     {% endwith %}
 
-
 </div>
 <br>
-
 
 {% empty %}
 
 <p>no comment yet</p>
 {% endfor %}
 
-
-
 {% endblock %}
+
