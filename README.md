@@ -6,7 +6,7 @@ A small Django project to build a very simple and practical social networking ap
 
 * In this project, we are facing a mini-app. Mini means that you can log in and log out like other networks and publish posts and comments, and on the other hand, leave comments and likes for other people's posts, but you probably cannot upload photos and videos.
 
-* The focus of the project is django orm, after create super user, aork in admin and test it
+* The focus of the project is django orm, after create super user, work in admin and test it
 
 ## 🛠 Skills
 python, oop, django, docker.
