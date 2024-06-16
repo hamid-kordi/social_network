@@ -128,7 +128,7 @@ class UserFollowView(LoginRequiredMixin, View):
         else:
             Follow(from_user=request.user, to_user=user).save()
             messages.success(request, "now you follow your friend", "success")
-        return redirect("account:user_profile", user.id)
+        return redirect("account:user_profile", user.pk)
 
 
 class UserUnFollowView(LoginRequiredMixin, View):
@@ -140,7 +140,7 @@ class UserUnFollowView(LoginRequiredMixin, View):
             messages.success(request, "now un follow your friend", "success")
         else:
             messages.error(request, "you unfollow this person alredy", "danger")
-        return redirect("account:user_profile", user.id)
+        return redirect("account:user_profile", user.pk)
 
 
 class UserEditView(LoginRequiredMixin, View):
@@ -148,9 +148,9 @@ class UserEditView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = self.form_class(
-            instance=request.user.profile, initial={"email": request.user.email}
+            # instance=request.user.profile, initial={"email": request.user.email}
         )
-        return render(request, "account/edit_profile", {"form": form})
+        return render(request, "account/edit_profile.html", {"form": form})
 
     def post(self, request):
         form = self.form_class(request.POST, instance=request.user.profile)

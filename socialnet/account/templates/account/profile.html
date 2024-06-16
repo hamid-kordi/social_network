@@ -5,7 +5,7 @@
 
 <h2 class="text-center"> {{ user.username }}</h2>
 
-{% if request.user.id == user.id %}
+{% if request.user.pk == user.pk %}
 <a href="{% url 'home:post_create' %}" class="btn btn-primary">CrEaTe</a>
 <a href="{% url 'account:edit_user' %}" class="btn btn-info">edit</a>
 
@@ -13,10 +13,10 @@
 
 
 
-{% if request.user.id != user.id and not is_follow %}
-<a class="btn btn-primary" href="{% url 'account:user_follow' user.id %}">Follow</a>
-{% elif request.user.id != user.id and is_follow %}
-<a class="btn btn-primary" href="{% url 'account:user_unfollow' user.id %}">Unfollow</a>
+{% if request.user.pk != user.pk and not is_follow %}
+<a class="btn btn-primary" href="{% url 'account:user_follow' user.pk %}">Follow</a>
+{% elif request.user.pk != user.pk and is_follow %}
+<a class="btn btn-primary" href="{% url 'account:user_unfollow' user.pk %}">Unfollow</a>
 {% endif %}
 
 <div class="card">

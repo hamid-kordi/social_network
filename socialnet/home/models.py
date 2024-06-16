@@ -6,7 +6,7 @@ from django.urls import reverse
 
 
 class Post(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     body = models.TextField()
     slug = models.SlugField()
     created = models.DateField(auto_now_add=True)
@@ -19,24 +19,24 @@ class Post(models.Model):
         return f"{self.slug} -> {self.user} - {self.created}"
 
     def get_absolute_url(self):
-        return reverse("home:post_detail", args=[self.id, self.slug])
+        return reverse("home:post_detail", args=[self.pk, self.slug])
 
     def likes_count(self):
-        return self.plike.count()
+        return self.pvotes.count()
 
     def user_can_like(self, user):
-        user_like = user.ulike.filter(post=self)
+        user_like = user.uvotes.filter(post=self)
         if user_like.exists():
             return True
         return False
 
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="usercomment")
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="posrcomment")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ucomments")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="pcomments")
     is_reply = models.BooleanField(default=False)
     reply = models.ForeignKey(
-        "self", on_delete=models.CASCADE, blank=True, null=True, related_name="ureply"
+        "self", on_delete=models.CASCADE, blank=True, null=True, related_name="rcomments"
     )
     body = models.TextField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
@@ -46,8 +46,8 @@ class Comment(models.Model):
 
 
 class Vote(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="ulike")
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="plike")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="uvotes")
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="pvotes")
 
     def __str__(self) -> str:
         return f"{self.user} liked {self.post.slug}"

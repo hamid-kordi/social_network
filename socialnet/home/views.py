@@ -31,7 +31,7 @@ class DetailViewPost(View):
     form_class_reply = CommentReplyForm
 
     def setup(self, request: HttpRequest, *args: Any, **kwargs: Any) -> None:
-        self.post_ionstans = get_object_or_404(
+        self.post_instance = get_object_or_404(
             Post, pk=kwargs["post_id"], slug=kwargs["post_slug"]
         )
         return super().setup(request, *args, **kwargs)
@@ -46,9 +46,9 @@ class DetailViewPost(View):
         #     id=post_id,
         #     slug=post_slug,
         # )
-        comment = self.post_ionstans.posrcomment.filter(is_reply=False)
+        comment = self.post_instance.pcomments.filter(is_reply=False)
         can_like = False
-        if request.user.is_authenticated and self.post_ionstans.user_can_like(
+        if request.user.is_authenticated and self.post_instance.user_can_like(
             request.user
         ):
             can_like = True
@@ -56,7 +56,7 @@ class DetailViewPost(View):
             request,
             "home/detail.html",
             {
-                "post": self.post_ionstans,
+                "post": self.post_instance,
                 "comments": comment,
                 "form": self.form_class,
                 "reply_form": self.form_class_reply,
@@ -74,7 +74,7 @@ class DetailViewPost(View):
             new_comment.save()
             messages.success(request, "comment added", "success")
             return redirect(
-                "home:post_detail", self.post_ionstans.id, self.post_ionstans.slug
+                "home:post_detail", self.post_instance.pk, self.post_instance.slug
             )
 
 
@@ -82,7 +82,7 @@ class PostDeleteView(LoginRequiredMixin, View):
     def get(self, request, post_id):
         post = get_object_or_404(Post, id=post_id)
         # post = Post.objects.get(pk=post_id)
-        if post.user.id == request.user.id:
+        if post.user.pk == request.user.id:
             post.delete()
             messages.success(request, "post deleted successfuly", "success")
         else:
@@ -99,7 +99,7 @@ class PostUpdateView(LoginRequiredMixin, View):
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any):
         post = self.post_instanse
-        if not post.user.id == request.user.id:
+        if not post.user.pk == request.user.pk:
             messages.error(request, "you can not update post", "danger")
             return redirect("home:home")
         return super().dispatch(request, *args, **kwargs)
@@ -117,7 +117,7 @@ class PostUpdateView(LoginRequiredMixin, View):
             new_post.slug = slugify(form.cleaned_data["body"][:30])
             new_post.save()
             messages.success(request, "post changed successfuly", "success")
-            return redirect("home:post_detail", post.id, post.slug)
+            return redirect("home:post_detail", post.pk, post.slug)
 
 
 class PostCreateView(LoginRequiredMixin, View):
@@ -153,7 +153,7 @@ class PostAddReplyView(LoginRequiredMixin, View):
             reply.is_reply = True
             reply.save()
             messages.success(request, "your reply submit successful ", "success")
-        return redirect("home:post_detail", post.id, post.slug)
+        return redirect("home:post_detail", post.pk, post.slug)
 
 
 class PostLikeView(LoginRequiredMixin, View):
@@ -166,4 +166,4 @@ class PostLikeView(LoginRequiredMixin, View):
         else:
             Vote.objects.create(post=post, user=request.user)
             messages.success(request, "like", "success")
-        return redirect("home:post_detail", post.id, post.slug)
+        return redirect("home:post_detail", post.pk, post.slug)

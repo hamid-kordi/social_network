@@ -12,7 +12,7 @@ class Follow(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"{self.from_user} folloing {self.to_user}"
+        return f"{self.from_user} following {self.to_user}"
 
 
 class Profile(models.Model):
